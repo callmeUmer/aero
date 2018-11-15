@@ -24,7 +24,7 @@ class mainWindow(QMainWindow, Ui_MainWindow):
         self.WindowTitle = "Python Code Editor"
         self.actionOpen.triggered.connect(self.openFileNameDialog)
         self.actionSave.triggered.connect(self.saveFile)
-        self.actionSave_As.triggered.connect(self.saveAsFileNameDialog)
+        self.actionSaveAs.triggered.connect(self.saveAsFileNameDialog)
 
     # function for opening a file
 
