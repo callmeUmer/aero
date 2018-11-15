@@ -17,17 +17,17 @@ class mainWindow(QMainWindow, Ui_MainWindow):
         super(mainWindow, self).__init__(parent)
         self.setupUi(self)
         self.FILENAME = None
+        self.setWindowTitle("Aero")
         self.initUI()
 
     # initialization of UI
     def initUI(self):
-        self.WindowTitle = "Python Code Editor"
         self.actionOpen.triggered.connect(self.openFileNameDialog)
         self.actionSave.triggered.connect(self.saveFile)
         self.actionSaveAs.triggered.connect(self.saveAsFileNameDialog)
 
-    # function for opening a file
 
+    # function for opening a file
     def openFileNameDialog(self):
         options = QFileDialog.Options()
         options |= QFileDialog.DontUseNativeDialog
@@ -38,12 +38,13 @@ class mainWindow(QMainWindow, Ui_MainWindow):
             options=options)
         if filename:
             self.FILENAME = filename
+            self.setWindowTitle(str(filename))
             with open(filename, 'r') as file:
                 read_file = file.read()
                 self.textEdit.setPlainText(read_file)
 
-    # function for saving changes to the opened file
 
+    # function for saving changes to the opened file
     def saveFile(self):
         if self.FILENAME:
             with open(self.FILENAME, 'w') as save:
@@ -56,8 +57,8 @@ class mainWindow(QMainWindow, Ui_MainWindow):
                 "No file opened",
                 QMessageBox.Yes | QMessageBox.No)
 
-    # function for saving changes to a new file
 
+    # function for saving changes to a new file
     def saveAsFileNameDialog(self):
         options = QFileDialog.Options()
         options |= QFileDialog.DontUseNativeDialog
