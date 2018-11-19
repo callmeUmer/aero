@@ -9,6 +9,11 @@ from PyQt5.QtWidgets import (QApplication, QWidget, QInputDialog,
                              QLineEdit, QFileDialog, QMainWindow, QMessageBox)
 from design import Ui_MainWindow
 
+APPSTYLE="""
+QMainWindow{
+background-color: #696969;
+}
+"""
 
 class mainWindow(QMainWindow, Ui_MainWindow):
     """ mainWindow class to display mainwindows and widgets """
@@ -16,15 +21,13 @@ class mainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self, parent=None):
         super(mainWindow, self).__init__(parent)
         self.setupUi(self)
+        self.setStyleSheet(APPSTYLE)
         self.FILENAME = None
         self.setWindowTitle("Aero")
         self.initUI()
 
     # initialization of UI
     def initUI(self):
-        if self.FILENAME:
-            with open(self.FILENAME, 'r') as f:
-                pass
         self.actionOpen.triggered.connect(self.openFileNameDialog)
         self.actionSave.triggered.connect(self.saveFile)
         self.actionSaveAs.triggered.connect(self.saveAsFileNameDialog)
@@ -45,6 +48,12 @@ class mainWindow(QMainWindow, Ui_MainWindow):
             with open(filename, 'r') as file:
                 read_file = file.read()
                 self.textEdit.setPlainText(read_file)
+                number = 1
+                for ln_number, no in enumerate(file):
+                    pass
+                    number = ln_number
+                self.textEdit_2.setPlainText(str(number))
+
 
 
     # function for saving changes to the opened file
@@ -58,7 +67,7 @@ class mainWindow(QMainWindow, Ui_MainWindow):
                 self,
                 'No file opened',
                 "No file opened",
-                QMessageBox.Yes | QMessageBox.No)
+                QMessageBox.Ok)
 
 
     # function for saving changes to a new file
