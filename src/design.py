@@ -47,7 +47,7 @@ class Ui_MainWindow(object):
         font = QtGui.QFont()
         font.setPointSize(12)
         self.textEdit_2.setFont(font)
-        self.textEdit_2.setStyleSheet("")
+        self.textEdit_2.setStyleSheet("background-color: #696969;")
         self.textEdit_2.setFrameShape(QtWidgets.QFrame.NoFrame)
         self.textEdit_2.setFrameShadow(QtWidgets.QFrame.Plain)
         self.textEdit_2.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
@@ -60,6 +60,7 @@ class Ui_MainWindow(object):
         font = QtGui.QFont()
         font.setPointSize(12)
         self.textEdit.setFont(font)
+        self.textEdit.setStyleSheet("background-color: #696969;")
         self.textEdit.setFrameShape(QtWidgets.QFrame.NoFrame)
         self.textEdit.setFrameShadow(QtWidgets.QFrame.Plain)
         self.textEdit.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
@@ -185,4 +186,3 @@ class Ui_MainWindow(object):
         self.actionReplace.setText(_translate("MainWindow", "&Replace"))
         self.actionReplace.setStatusTip(_translate("MainWindow", "Replace text"))
         self.actionReplace.setShortcut(_translate("MainWindow", "Ctrl+R"))
-

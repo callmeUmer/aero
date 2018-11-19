@@ -22,6 +22,9 @@ class mainWindow(QMainWindow, Ui_MainWindow):
 
     # initialization of UI
     def initUI(self):
+        if self.FILENAME:
+            with open(self.FILENAME, 'r') as f:
+                pass
         self.actionOpen.triggered.connect(self.openFileNameDialog)
         self.actionSave.triggered.connect(self.saveFile)
         self.actionSaveAs.triggered.connect(self.saveAsFileNameDialog)
