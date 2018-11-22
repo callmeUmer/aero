@@ -5,10 +5,25 @@ DESCRIPTION: Minimalistic, Customizable Code Editor
 """
 
 from PyQt5 import QtGui
-from PyQt5.QtWidgets import (QApplication, QWidget, QInputDialog,
-                             QLineEdit, QFileDialog, QMainWindow, QMessageBox)
+from PyQt5.QtWidgets import (QApplication, QWidget, QInputDialog, QWidget,
+                    QLineEdit, QFileDialog, QMainWindow, QMessageBox, QTabWidget)
 from design import Ui_MainWindow
 import json
+
+
+class tabs(QTabWidget, Ui_MainWindow):
+    def __init__(self, parent=None):
+        super(tabs, self).__init__(parent)
+        self.initTab()
+
+    def initTab(self):
+        self.tabWidget = QTabWidget()
+        self.tabWidget.setDocumentMode(True)
+        self.tabWidget.setTabsClosable(True)
+        self.tabWidget.setMovable(True)
+        self.tabWidget.setObjectName("tabWidget")
+        self.tab = QWidget()
+        self.tab.setObjectName("tab")
 
 
 class mainWindow(QMainWindow, Ui_MainWindow):
@@ -17,10 +32,11 @@ class mainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self, parent=None):
         super(mainWindow, self).__init__(parent)
         self.setupUi(self)
-        self.connector()
+        #self.connector()
         self.FILENAME = None
         self.setWindowTitle("Aero")
         self.initUI()
+        self.initStyle()
 
     # initialization of UI
     def initUI(self):
@@ -28,12 +44,13 @@ class mainWindow(QMainWindow, Ui_MainWindow):
         self.actionSave.triggered.connect(self.saveFile)
         self.actionSaveAs.triggered.connect(self.saveAsFileNameDialog)
 
-    def connector(self):
+    #
+    def initStyle(self):
         with open("../config.json", "r") as config:
             configRead = config.read()
             self.jsonData = json.loads(configRead)
             self.backgroundcolor = self.jsonData["editor"][0]["editorBackgroundColor"]
-            self.setStyleSheet("QMainWindow{background-color: %s;} " %(self.backgroundcolor))
+            self.setStyleSheet("QMainWindow{background-color: %s;}" %(self.backgroundcolor))
             self.textEdit_2.setStyleSheet("background-color: %s;" %(self.backgroundcolor))
             self.textEdit.setStyleSheet("background-color: %s;" %(self.backgroundcolor))
 
@@ -47,6 +64,8 @@ class mainWindow(QMainWindow, Ui_MainWindow):
             "All Files (*);;Python Files (*.py);; C++ Files (*.cpp)",
             options=options)
         if filename:
+            if self.FILENAME:
+                newtab = tabs()
             self.FILENAME = filename
             self.setWindowTitle(str(filename))
             with open(filename, 'r') as file:
@@ -59,6 +78,9 @@ class mainWindow(QMainWindow, Ui_MainWindow):
                 self.textEdit_2.setPlainText(str(number))
 
 
+    def newTab(self):
+        openTab = tabs()
+        widget.exec_()
 
     # function for saving changes to the opened file
     def saveFile(self):
