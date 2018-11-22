@@ -33,6 +33,7 @@ class mainWindow(QMainWindow, Ui_MainWindow):
             configRead = config.read()
             self.jsonData = json.loads(configRead)
             self.backgroundcolor = self.jsonData["editor"][0]["editorBackgroundColor"]
+            self.setStyleSheet("QMainWindow{background-color: %s;} " %(self.backgroundcolor))
             self.textEdit_2.setStyleSheet("background-color: %s;" %(self.backgroundcolor))
             self.textEdit.setStyleSheet("background-color: %s;" %(self.backgroundcolor))
 
