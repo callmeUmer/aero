@@ -17,7 +17,7 @@ class mainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self, parent=None):
         super(mainWindow, self).__init__(parent)
         self.setupUi(self)
-        self.setStyleSheet(APPSTYLE)
+        self.connector()
         self.FILENAME = None
         self.setWindowTitle("Aero")
         self.initUI()
@@ -28,7 +28,14 @@ class mainWindow(QMainWindow, Ui_MainWindow):
         self.actionSave.triggered.connect(self.saveFile)
         self.actionSaveAs.triggered.connect(self.saveAsFileNameDialog)
 
-        
+    def connector(self):
+        with open("../config.json", "r") as config:
+            configRead = config.read()
+            self.jsonData = json.loads(configRead)
+            self.backgroundcolor = self.jsonData["editor"][0]["editorBackgroundColor"]
+            self.textEdit_2.setStyleSheet("background-color: %s;" %(self.backgroundcolor))
+            self.textEdit.setStyleSheet("background-color: %s;" %(self.backgroundcolor))
+
     # function for opening a file
     def openFileNameDialog(self):
         options = QFileDialog.Options()
