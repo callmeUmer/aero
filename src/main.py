@@ -8,12 +8,8 @@ from PyQt5 import QtGui
 from PyQt5.QtWidgets import (QApplication, QWidget, QInputDialog,
                              QLineEdit, QFileDialog, QMainWindow, QMessageBox)
 from design import Ui_MainWindow
+import json
 
-APPSTYLE="""
-QMainWindow{
-background-color: #696969;
-}
-"""
 
 class mainWindow(QMainWindow, Ui_MainWindow):
     """ mainWindow class to display mainwindows and widgets """
@@ -32,7 +28,7 @@ class mainWindow(QMainWindow, Ui_MainWindow):
         self.actionSave.triggered.connect(self.saveFile)
         self.actionSaveAs.triggered.connect(self.saveAsFileNameDialog)
 
-
+        
     # function for opening a file
     def openFileNameDialog(self):
         options = QFileDialog.Options()
