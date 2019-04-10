@@ -1,109 +1,57 @@
-"""
--*- coding: utf-8 -*-
-Author : UMAR SOHAIL
-DESCRIPTION: Minimalistic, Customizable Code Editor
-"""
-
-from PyQt5 import QtGui
-from PyQt5.QtWidgets import (QApplication, QWidget, QInputDialog,
-                             QLineEdit, QFileDialog, QMainWindow, QMessageBox)
-from design import Ui_MainWindow
-import json
-
-
-class mainWindow(QMainWindow, Ui_MainWindow):
-    """ mainWindow class to display mainwindows and widgets """
-
-    def __init__(self, parent=None):
-        super(mainWindow, self).__init__(parent)
-        self.setupUi(self)
-        self.connector()
-        self.FILENAME = None
-        self.setWindowTitle("Aero")
-        self.initUI()
-
-    # initialization of UI
-    def initUI(self):
-        self.actionOpen.triggered.connect(self.openFileNameDialog)
-        self.actionSave.triggered.connect(self.saveFile)
-        self.actionSaveAs.triggered.connect(self.saveAsFileNameDialog)
-
-    def connector(self):
-        with open("../config.json", "r") as config:
-            configRead = config.read()
-            self.jsonData = json.loads(configRead)
-            self.backgroundcolor = self.jsonData["editor"][0]["editorBackgroundColor"]
-            self.setStyleSheet("QMainWindow{background-color: %s;} " %(self.backgroundcolor))
-            self.textEdit_2.setStyleSheet("background-color: %s;" %(self.backgroundcolor))
-            self.textEdit.setStyleSheet("background-color: %s;" %(self.backgroundcolor))
-
-    # function for opening a file
-    def openFileNameDialog(self):
-        options = QFileDialog.Options()
-        options |= QFileDialog.DontUseNativeDialog
-        filename, _ = QFileDialog.getOpenFileName(
-            self, "Open Files",
-            "",
-            "All Files (*);;Python Files (*.py);; C++ Files (*.cpp)",
-            options=options)
-        if filename:
-            self.FILENAME = filename
-            self.setWindowTitle(str(filename))
-            with open(filename, 'r') as file:
-                read_file = file.read()
-                self.textEdit.setPlainText(read_file)
-                number = 1
-                for ln_number, no in enumerate(file):
-                    pass
-                    number = ln_number
-                self.textEdit_2.setPlainText(str(number))
+from tkinter import *
+#from functions import openFile
+from tkinter.filedialog import askopenfilename
 
 
 
-    # function for saving changes to the opened file
-    def saveFile(self):
-        if self.FILENAME:
-            with open(self.FILENAME, 'w') as save:
-                text = self.textEdit.toPlainText()
-                save.write(text)
-        else:
-            QMessageBox.warning(
-                self,
-                'No file opened',
-                "No file opened",
-                QMessageBox.Ok)
+def openFile():
+    file = askopenfilename(initialdir = "c:/",
+    filetypes = (('Python Files', '*.py'),('All Files', '*.*'),),
+    title = "Choose a File to open",)
+
+    try:
+        with open(file, 'r') as fileRead:
+            fileR = fileRead.read()
+            textEditor.insert(INSERT, fileR)
+
+    except Exception as e:
+            print(e)
+            print("NO FILE EXIST")
 
 
-    # function for saving changes to a new file
-    def saveAsFileNameDialog(self):
-        options = QFileDialog.Options()
-        options |= QFileDialog.DontUseNativeDialog
-        filename, _ = QFileDialog.getSaveFileName(
-            self, "Save File",
-            "",
-            "All Files (*);; Python Files (*.py);; C++ Files(*.cpp)",
-            options=options)
-        split_ex = _.split(' ')
-        extension = ''
 
-        if filename:
-            if split_ex[0] == 'C++':
-                extension += '.cpp'
-            elif split_ex[0] == 'Python':
-                extension += '.py'
-            else:
-                pass
+window = Tk()
 
-            with open(filename + extension, 'w+') as saveAs:
-                self.FILENAME = saveAs
-                text = self.textEdit.toPlainText()
-                saveAs.write(text)
-                saveAs.close()
+# this part of code initiate main windows
+mainFrame = Frame(window)
+mainFrame.pack()
+
+# this initiate main menubar at top
+menuBar = Menu(window)
+
+# following lines of code will initiate options on menubar
+fileMenu = Menu(menuBar, tearoff=0)
+editMenu = Menu(menuBar, tearoff=0)
+
+#following block is for filemenu :)
+fileMenu.add_command(label='Open', command=openFile)
+fileMenu.add_command(label='New File', command='')
+fileMenu.add_command(label='Save', command='')
+fileMenu.add_command(label='SaveAs', command='')
+menuBar.add_cascade(label='File', menu=fileMenu)
+
+# following block is for editmenu
+editMenu.add_command(label='Undo', command='')
+editMenu.add_command(label='Redo', command='')
+menuBar.add_cascade(label='Edit', menu=editMenu)
 
 
-if __name__ == '__main__':
-    import sys
-    app = QApplication(sys.argv)
-    sim = mainWindow()
-    sim.show()
-    sys.exit(app.exec_())
+#adding a text editor
+textEditor = Text(window)
+textEditor.pack()
+
+
+
+
+window.config(menu=menuBar)
+window.mainloop()
