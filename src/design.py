@@ -68,7 +68,7 @@ class Ui_MainWindow(object):
         self.gridLayout_2.addWidget(self.splitter, 0, 0, 1, 1)
         self.tabWidget.addTab(self.tab, "")
         self.gridLayout.addWidget(self.tabWidget, 0, 0, 1, 1)
-        MainWindow.setCentralWidget(self.centralwidget)
+        zMainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 20))
         font = QtGui.QFont()
