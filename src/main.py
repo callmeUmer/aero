@@ -3,6 +3,23 @@ from tkinter import *
 from tkinter.filedialog import askopenfilename
 
 
+
+def openFile():
+    file = askopenfilename(initialdir = "c:/",
+    filetypes = (('Python Files', '*.py'),('All Files', '*.*'),),
+    title = "Choose a File to open",)
+
+    try:
+        with open(file, 'r') as fileRead:
+            fileR = fileRead.read()
+            textEditor.insert(INSERT, fileR)
+
+    except Exception as e:
+            print(e)
+            print("NO FILE EXIST")
+
+
+
 window = Tk()
 
 # this part of code initiate main windows
