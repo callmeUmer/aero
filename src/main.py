@@ -1,23 +1,42 @@
 from tkinter import *
 #from functions import openFile
-from tkinter.filedialog import askopenfilename
+from tkinter.filedialog import askopenfilename, asksaveasfile
 
 
-
+# function to open a file in text editor
 def openFile():
+    global file
     file = askopenfilename(initialdir = "c:/",
-    filetypes = (('Python Files', '*.py'),('All Files', '*.*'),),
-    title = "Choose a File to open",)
-
+            filetypes = (('Python Files', '*.py'),('All Files', '*.*'),),
+            title = "Choose a File to open",)
     try:
         with open(file, 'r') as fileRead:
             fileR = fileRead.read()
             textEditor.insert(INSERT, fileR)
 
     except Exception as e:
-            print(e)
-            print("NO FILE EXIST")
+        print(e)
 
+# function to save the content in text editor to an opened file
+def saveFile():
+    try:
+        with open(file, 'w') as fileS:
+            to_write = textEditor.get('1.0', END)
+            #print("to_write" + to_write)
+            fileS.write(to_write)
+
+    except Exception as e:
+        print(e)
+
+# function to save the content in text editor to a new file of your desire
+def saveAsFile():
+    to_saveFile = asksaveasfile(
+                initialdir = ('c:/'),
+                filetypes = (('Python File', '.py'), ('All Files', '*.*')),
+                title = 'Save As',
+                defaultextension = 'py',
+                )
+    print(to_saveFile)
 
 
 window = Tk()
@@ -36,8 +55,8 @@ editMenu = Menu(menuBar, tearoff=0)
 #following block is for filemenu :)
 fileMenu.add_command(label='Open', command=openFile)
 fileMenu.add_command(label='New File', command='')
-fileMenu.add_command(label='Save', command='')
-fileMenu.add_command(label='SaveAs', command='')
+fileMenu.add_command(label='Save', command=saveFile)
+fileMenu.add_command(label='SaveAs', command=saveAsFile)
 menuBar.add_cascade(label='File', menu=fileMenu)
 
 # following block is for editmenu
