@@ -2,6 +2,9 @@ from tkinter import *
 #from functions import openFile
 from tkinter.filedialog import askopenfilename, asksaveasfile
 
+#some global variables
+file = None
+
 
 # function to open a file in text editor
 def openFile():
@@ -32,11 +35,13 @@ def saveFile():
 def saveAsFile():
     to_saveFile = asksaveasfile(
                 initialdir = ('c:/'),
-                filetypes = (('Python File', '.py'), ('All Files', '*.*')),
+                filetypes = (('Python Files', '*.py'),('All Files', '*.*')),
                 title = 'Save As',
-                defaultextension = 'py',
+                defaultextension = '*.*',
                 )
-    print(to_saveFile)
+    global file
+    file = to_saveFile.name
+    saveFile()
 
 
 window = Tk()
