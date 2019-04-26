@@ -7,7 +7,7 @@ file = None
 
 
 # function to open a file in text editor
-def openFile():
+def openFile(*args, **kwargs):
     global file
     file = askopenfilename(initialdir = "c:/",
             filetypes = (('Python Files', '*.py'),('All Files', '*.*'),),
@@ -21,7 +21,7 @@ def openFile():
         print(e)
 
 # function to save the content in text editor to an opened file
-def saveFile():
+def saveFile(*args, **kwargs):
     try:
         with open(file, 'w') as fileS:
             to_write = textEditor.get('1.0', END)
@@ -32,7 +32,7 @@ def saveFile():
         print(e)
 
 # function to save the content in text editor to a new file of your desire
-def saveAsFile():
+def saveAsFile(*args, **kwargs):
     to_saveFile = asksaveasfile(
                 initialdir = ('c:/'),
                 filetypes = (('Python Files', '*.py'),('All Files', '*.*')),
@@ -58,10 +58,9 @@ fileMenu = Menu(menuBar, tearoff=0)
 editMenu = Menu(menuBar, tearoff=0)
 
 #following block is for filemenu :)
-fileMenu.add_command(label='Open', command=openFile)
-fileMenu.add_command(label='New File', command='')
-fileMenu.add_command(label='Save', command=saveFile)
-fileMenu.add_command(label='SaveAs', command=saveAsFile)
+fileMenu.add_command(label='Open', command=openFile, accelerator='Ctrl+o')
+fileMenu.add_command(label='Save', command=saveFile, accelerator='Ctrl+s')
+fileMenu.add_command(label='SaveAs/newFile', command=saveAsFile, accelerator='Ctrl+n')
 menuBar.add_cascade(label='File', menu=fileMenu)
 
 # following block is for editmenu
@@ -74,7 +73,11 @@ menuBar.add_cascade(label='Edit', menu=editMenu)
 textEditor = Text(window)
 textEditor.pack()
 
+#adding some shortcuts
 
+window.bind("<Control-o>", openFile)
+window.bind("<Control-s>", saveFile)
+window.bind("<Control-n>", saveAsFile)
 
 
 window.config(menu=menuBar)
