@@ -45,6 +45,7 @@ def saveAsFile(*args, **kwargs):
 
 
 window = Tk()
+window.title("google")
 
 # this part of code initiate main windows
 mainFrame = Frame(window)
@@ -70,8 +71,10 @@ menuBar.add_cascade(label='Edit', menu=editMenu)
 
 
 #adding a text editor
-textEditor = Text(window)
-textEditor.pack()
+textEditor = Text(window, tabs='32')
+#textEditor.tag_config('tabs',tags='4')
+textEditor.pack(expand=True, fill='both')
+
 
 #adding some shortcuts
 
