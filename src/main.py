@@ -24,19 +24,28 @@ class mainWindow:
         self.fileMenu.add_command(label='saveAsFile', command=self.saveAsFile, accelerator='Ctrl+n')
         self.mainMenu.add_cascade(label='Edit', menu=self.fileMenu,)
 
-        #text editor
-        self.numberLine = Text(self.root, width=5, highlightbackground='#212835', bg='#212835', borderwidth=0)
+        #number line
+        self.numberLine = Text(
+                self.root, width=5, highlightbackground='#212835', bg='#212835',
+                borderwidth=0, highlightthickness=0, fg='white')
         self.numberLine.pack(side=LEFT, fill='both')
+        self.numberLine.config()
 
-        self.textEditor = Text(self.root, tabs='34', highlightbackground='#212835', bg='#212835', borderwidth=0)
+        #text editor
+        self.textEditor = Text(
+                self.root, tabs='34', highlightbackground='#212835', bg='#212835',
+                borderwidth=0, highlightthickness=0, insertbackground='white', fg='white')
         self.textEditor.pack(fill='both', expand=True)
 
         #root configuration
         self.root.config(menu=self.mainMenu,)
-        #self.root.configure(background='black')
+
+        #some key bindings
         self.root.bind("<Control-o>", self.openFile)
         self.root.bind("<Control-s>", self.saveFile)
         self.root.bind("<Control-n>", self.saveAsFile)
+        self.textEditor.bind("<Return>", self.initiatNumberLine)
+        #self.initiatNumberLine()
 
 
     #function for opening files
@@ -82,7 +91,12 @@ class mainWindow:
         self.saveFile()
 
     #function for writing numbers on text widget
-
+    def initiatNumberLine(self, *args, **kwargs):
+        all = self.textEditor.get('0.0', END)
+        numlist = all.splitlines()
+        lineNumber = len(numlist)
+        print(numlist)
+        self.numberLine.insert(float(lineNumber), str(lineNumber)+'\n')
 
 
 app = Tk()
