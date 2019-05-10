@@ -19,6 +19,7 @@ class mainWindow(Tk):
         self.root = root
         self.file = None
         self.lastFileModified = None
+        self.lines = None
         root.title("Welcome to AERO")
 
         #main menu
@@ -33,21 +34,25 @@ class mainWindow(Tk):
         self.mainMenu.add_cascade(label='Edit', menu=self.fileMenu,)
 
         #number line
+
         self.scroll = Scrollbar(self.root, orient=VERTICAL, command=self._simulScroll)
         self.scroll.pack()
+
+
         self.numberLine = Text(
                 self.root, width=5, highlightbackground='#212835', bg='#212835',
-                borderwidth=0, highlightthickness=0, fg='white',)
-        self.numberLine.pack(side=LEFT, fill='both')
+                borderwidth=0, highlightthickness=0, fg='white', )
         self.numberLine['yscrollcommand'] = self.scroll.set
+        self.numberLine.pack(side=LEFT, fill='both')
         self.numberLine.config(state=DISABLED)
 
         #text editor
         self.textEditor = Text(
                 self.root, tabs='34', highlightbackground='#212835', bg='#212835',
-                borderwidth=0, highlightthickness=0, insertbackground='white', fg='white', wrap='none')
+                borderwidth=0, highlightthickness=0, insertbackground='white', fg='white', wrap='none',)
         self.textEditor.pack(fill='both', expand=True)
         self.textEditor['yscrollcommand'] = self.scroll.set
+        #self.textEditor.config(yscrollincreament = 10)
 
         #root configuration
         self.root.config(menu=self.mainMenu,)
@@ -56,31 +61,29 @@ class mainWindow(Tk):
         self.root.bind("<Control-o>", self.openFile)
         self.root.bind("<Control-s>", self.saveFile)
         self.root.bind("<Control-n>", self.saveAsFile)
-        self.textEditor.bind("<BackSpace>", self.writeNumberLine)
-        self.textEditor.bind('<Button-5>', self._on_mousewheel_up)
-        self.textEditor.bind('<Button-4>', self._on_mousewheel_down)
-        self.textEditor.bind('<Up>', self._on_mousewheel_up)
-        self.textEditor.bind('<Down>', self._on_mousewheel_down)
-        self.numberLine.bind('<Button-5>', self._on_mousewheel_up)
-        self.numberLine.bind('<Button-4>', self._on_mousewheel_down)
-        self.numberLine.bind('<Up>', self._on_mousewheel_up)
-        self.numberLine.bind('<Down>', self._on_mousewheel_down)
-        self.textEditor.bind("<Return>", self.writeNumberLine)
-
+        self.textEditor.bind("<BackSpace>", self.updateNumberLine)
+        self.textEditor.bind('<Button>', self._mousewheel)
+        self.numberLine.bind('<Button>', self._mousewheel)
+        self.textEditor.bind("<Return>", self.updateNumberLine)
+        self.initiateNumberLine(1)
+        #self.updateNumberLine()
+        #self.test()
     #function for simultanous Scrollbar
     def _simulScroll(self, *args, **kwargs):
         eval('self.textEditor.yview(*args)')
         eval('self.numberLine.yview(*args)')
 
 
-    def _on_mousewheel_up(self, event):
-        self.textEditor.yview_scroll(1, "units")
-        self.numberLine.yview_scroll(4, "units")
+    def _mousewheel(self, event):
+        if event.num==4:
+            self.textEditor.yview_scroll(-4, "units")
+            self.numberLine.yview_scroll(-4, "units")
+            return "break"
 
-    def _on_mousewheel_down(self, event):
-        self.textEditor.yview_scroll(-1, "units")
-        self.numberLine.yview_scroll(-4, "units")
-
+        elif event.num==5:
+            self.textEditor.yview_scroll(4, "units")
+            self.numberLine.yview_scroll(4, "units")
+            return "break"
 
     #function for opening files
     def _changeTitleName(self, *args, **kwargs):
@@ -96,7 +99,7 @@ class mainWindow(Tk):
                 fileR = fileRead.read()
                 self.textEditor.insert(INSERT, fileR)
             self._changeTitleName()
-            self.writeNumberLine()
+            self.initiateNumberLine(1)
         except Exception as e:
             print(e)
 
@@ -127,14 +130,34 @@ class mainWindow(Tk):
 
     #function for writing numbers on text widget
 
-    def writeNumberLine(self, *event):
+    def initiateNumberLine(self, lines):
         displayLines = self.textEditor.count("1.0", "end", "lines")
         self.numberLine.config(state=NORMAL)
         self.numberLine.delete('1.0', END)
-        for item in range(1, displayLines+2):
+        for item in range(1, displayLines+lines):
             self.numberLine.insert(float(item), str(item) + '\n')
         self.numberLine.config(state=DISABLED)
 
+
+    def updateNumberLine(self, event):
+        display = self.textEditor.count("1.0", "end", "lines")
+        self.numberLine.config(state=NORMAL)
+        numbEnd = float(self.numberLine.index('end'))
+        to_delete, character = self.textEditor.index("end-1c").split('.')
+        print(f"TD = {to_delete}\n numbEnd = {numbEnd}\n character = {character}\n")
+        if event.keycode == 22:
+            if int(character) < 1 and int(to_delete) > 1:
+                self.numberLine.delete(float(to_delete), 'end')
+        else:
+            if int(to_delete) > 1:
+                self.initiateNumberLine(2)
+            self.numberLine.insert(float(to_delete)+1, str(int(to_delete)+1) + '\n')
+        self.numberLine.config(state=DISABLED)
+
+
+    def test(self, *args, **kwargs):
+        displayLines = self.textEditor.count("1.0", "end-1c", "lines")
+        print(displayLines)
 
 app = Tk()
 aero = mainWindow(app)
