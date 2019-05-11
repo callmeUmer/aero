@@ -112,7 +112,7 @@ class mainWindow(Tk):
         print(to_saveFile.date_modified)
         self.saveFile()
 
-
+    #function to highlight the working line
     def highlightLine(self, *args, **kwargs):
         display = self.textEditor.count("1.0", "end", "lines")
         cursor = self.textEditor.index(INSERT)
@@ -129,6 +129,15 @@ class mainWindow(Tk):
             self.textEditor.tag_add(str(token), "range_start", "range_end")
             self.textEditor.mark_set("range_start", "range_end")
 
+
+    #function called when new file is opened
+    def highlightFile(self, *args, **kwargs):
+        to_highliget = self.textEditor.get('1.0', 'end-1c')
+        self.textEditor.mark_set("range_start", '1.0')
+        for token, context in lex(to_highliget, PythonLexer()):
+            self.textEditor.mark_set("range_end", "range_start + %dc" % len(context))
+            self.textEditor.tag_add(str(token), "range_start", "range_end")
+            self.textEditor.mark_set("range_start", "range_end")
 
 
 
