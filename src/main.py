@@ -2,9 +2,10 @@ from tkinter import *
 #from functions import openFile
 from tkinter.filedialog import askopenfilename, asksaveasfile
 from pygments import lex
-from pygments.lexers import PythonLexer
+from pygments.lexers import PythonLexer, get_lexer_for_filename
 import platform
 import os
+
 
 
 def count_monkeypatch(self, index1, index2, *args):
@@ -20,7 +21,7 @@ class mainWindow(Tk):
     def __init__(self, root):
         self.root = root
         self.file = None
-        self.lastFileModified = None
+        self.lexer = None
         self.lines = None
         root.title("Welcome to AERO")
 
@@ -40,23 +41,26 @@ class mainWindow(Tk):
                 self.root, tabs='34', highlightbackground='#212835', bg='#212835',
                 borderwidth=0, highlightthickness=0, insertbackground='white', fg='white', wrap='none',)
         self.textEditor.pack(fill='both', expand=True)
-        self.textEditor.tag_configure("Token.Keyword", foreground="#CC7A00")
-        self.textEditor.tag_configure("Token.Keyword.Constant", foreground="#CC7A00")
-        self.textEditor.tag_configure("Token.Keyword.Declaration", foreground="#CC7A00")
-        self.textEditor.tag_configure("Token.Keyword.Namespace", foreground="#CC7A00")
-        self.textEditor.tag_configure("Token.Keyword.Pseudo", foreground="#CC7A00")
-        self.textEditor.tag_configure("Token.Keyword.Reserved", foreground="#CC7A00")
-        self.textEditor.tag_configure("Token.Keyword.Type", foreground="#CC7A00")
+        self.textEditor.tag_configure("Token.Keyword", foreground='#c678dd')
+        self.textEditor.tag_configure("Token.Keyword.Constant", foreground='#c678dd')
+        self.textEditor.tag_configure("Token.Keyword.Declaration", foreground='#c678dd')
+        self.textEditor.tag_configure("Token.Keyword.Namespace", foreground='#c678dd')
+        self.textEditor.tag_configure("Token.Keyword.Pseudo", foreground='#c678dd')
+        self.textEditor.tag_configure("Token.Keyword.Reserved", foreground='#c678dd')
+        self.textEditor.tag_configure("Token.Keyword.Type", foreground='#c678dd')
 
-        self.textEditor.tag_configure("Token.Name.Class", foreground="#003D99")
+        self.textEditor.tag_configure("Token.Name.Class", foreground='#e5c07b')
         self.textEditor.tag_configure("Token.Name.Exception", foreground="#003D99")
-        self.textEditor.tag_configure("Token.Name.Function", foreground="#003D99")
+        self.textEditor.tag_configure("Token.Name.Function", foreground='#61afef')
+        self.textEditor.tag_configure("Token.Name.Function.Magic", foreground='#61afef')
+        self.textEditor.tag_configure("Token.Name.Builtin", foreground='#56b6c2')
+        self.textEditor.tag_configure("Token.Operator.Word", foreground='#c678dd')
+        self.textEditor.tag_configure("Token.Comment.Single", foreground='#5c6370')
+        self.textEditor.tag_configure("Token.Literal.String.Single", foreground="#248F24")
+        self.textEditor.tag_configure("Token.Literal.String.Doc", foreground="#248F24")
+        self.textEditor.tag_configure("Token.Literal.String.Double", foreground="#248F24")
 
-        self.textEditor.tag_configure("Token.Operator.Word", foreground="#CC7A00")
-
-        self.textEditor.tag_configure("Token.Comment", foreground="#B80000")
-
-        self.textEditor.tag_configure("Token.Literal.String", foreground="#248F24")
+        self.textEditor.tag_configure("function", foreground="#CC7A00")
 
         #root configuration
         self.root.config(menu=self.mainMenu,)
@@ -121,20 +125,27 @@ class mainWindow(Tk):
         column = cursorSplit[1]
         lineContext = self.textEditor.get(float(str(line) + '.0'), float(cursor))
         self.textEditor.mark_set("range_start", str(line) + '.0')
+        #if self.lexer:
+        #le = CustomPythonLexer()
+
         for token, context in lex(lineContext, PythonLexer()):
-            print(f'Token is {token} and Context is {context}')
-
-
+            print(token , context)
             self.textEditor.mark_set("range_end", "range_start + %dc" % len(context))
             self.textEditor.tag_add(str(token), "range_start", "range_end")
             self.textEditor.mark_set("range_start", "range_end")
+        #else:
+        #    pass
 
 
     #function called when new file is opened
     def highlightFile(self, *args, **kwargs):
         to_highliget = self.textEditor.get('1.0', 'end-1c')
         self.textEditor.mark_set("range_start", '1.0')
-        for token, context in lex(to_highliget, PythonLexer()):
+        lexerToUse = get_lexer_for_filename(str(self.file))
+        self.lexer = lexerToUse
+
+        for token, context in lex(to_highliget, lexerToUse):
+            #print(token, context)
             self.textEditor.mark_set("range_end", "range_start + %dc" % len(context))
             self.textEditor.tag_add(str(token), "range_start", "range_end")
             self.textEditor.mark_set("range_start", "range_end")
@@ -144,3 +155,4 @@ class mainWindow(Tk):
 app = Tk()
 aero = mainWindow(app)
 app.mainloop()
+
