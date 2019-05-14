@@ -1,6 +1,7 @@
 from tkinter import *
 #from functions import openFile
 from tkinter.filedialog import askopenfilename, asksaveasfile
+from tkinter import messagebox
 from pygments import lex
 from pygments.lexers import PythonLexer, get_lexer_for_filename
 import platform
@@ -94,15 +95,18 @@ class mainWindow(Tk):
 
     #function for saving files
     def saveFile(self, *args, **kwargs):
-        try:
-            with open(self.file, 'w') as fileS:
-                to_write = self.textEditor.get('1.0', END)
-                #print("to_write" + to_write)
-                fileS.write(to_write)
-            self._changeTitleName()
+        if self.file is None:
+            messagebox.showerror("No file is opened", "No file is opened")
+        else:
+            try:
+                with open(self.file, 'w') as fileS:
+                    to_write = self.textEditor.get('1.0', END)
+                    #print("to_write" + to_write)
+                    fileS.write(to_write)
+                self._changeTitleName()
 
-        except Exception as e:
-            print("Exception in saveFile as %s" % e)
+            except Exception as e:
+                print("Exception in saveFile as %s" % e)
 
     #function for creating or saveAsFile
     def saveAsFile(self,*args, **kwargs):
@@ -125,17 +129,11 @@ class mainWindow(Tk):
         column = cursorSplit[1]
         lineContext = self.textEditor.get(float(str(line) + '.0'), float(cursor))
         self.textEditor.mark_set("range_start", str(line) + '.0')
-        #if self.lexer:
-        #le = CustomPythonLexer()
 
         for token, context in lex(lineContext, PythonLexer()):
-            print(token , context)
             self.textEditor.mark_set("range_end", "range_start + %dc" % len(context))
             self.textEditor.tag_add(str(token), "range_start", "range_end")
             self.textEditor.mark_set("range_start", "range_end")
-        #else:
-        #    pass
-
 
     #function called when new file is opened
     def highlightFile(self, *args, **kwargs):
@@ -145,7 +143,6 @@ class mainWindow(Tk):
         self.lexer = lexerToUse
 
         for token, context in lex(to_highliget, lexerToUse):
-            #print(token, context)
             self.textEditor.mark_set("range_end", "range_start + %dc" % len(context))
             self.textEditor.tag_add(str(token), "range_start", "range_end")
             self.textEditor.mark_set("range_start", "range_end")
@@ -155,4 +152,3 @@ class mainWindow(Tk):
 app = Tk()
 aero = mainWindow(app)
 app.mainloop()
-
