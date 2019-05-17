@@ -4,7 +4,8 @@ from tkinter import messagebox
 
 
 class filehandler:
-    def __init__(self, root):
+    def __init__(self, root, text):
+        self.text = text
         self.root = root
         self.file = None
         self.root.bind("<Control-o>", self.openFile)
@@ -22,10 +23,10 @@ class filehandler:
         try:
             with open(self.file, 'r') as fileRead:
                 fileR = fileRead.read()
-                self.textEditor.delete('1.0', END)
-                self.textEditor.insert(INSERT, fileR)
+                self.text.delete('1.0', END)
+                self.text.insert(INSERT, fileR)
             self._changeTitleName()
-            self.highlightFile()
+            self.root.highlighter.highlightFile()
         except Exception as e:
             print(e)
 
@@ -37,7 +38,7 @@ class filehandler:
         else:
             try:
                 with open(self.file, 'w') as fileS:
-                    to_write = self.textEditor.get('1.0', END)
+                    to_write = self.text.get('1.0', END)
                     #print("to_write" + to_write)
                     fileS.write(to_write)
                 self._changeTitleName()
@@ -54,5 +55,4 @@ class filehandler:
                     defaultextension = '*.*',
                     )
         self.file = to_saveFile.name
-        print(to_saveFile.date_modified)
         self.saveFile()

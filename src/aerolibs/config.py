@@ -7,12 +7,11 @@ from .filehandler import filehandler
 
 
 class connector:
-    def __init__(self, main):
+    def __init__(self, main, text):
         self.main = main
+        self.text = text
         self.initModules()
 
     def initModules(self):
-        #textEditor(self.main)
-        #highlighter(self.main.textEditor)
-        menubar(self.main)
-        filehandler(self.main)
+        highlighter(self.text)
+        filehandler(self.main, self.text)

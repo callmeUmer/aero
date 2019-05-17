@@ -12,9 +12,9 @@ class menubar:
         self.editMenu = Menu(self.mainMenu, tearoff=0)
 
         #adding file menu dropdown options
-        self.fileMenu.add_command(label='open', command='', accelerator='Ctrl+o')
-        self.fileMenu.add_command(label='saveFile', command='', accelerator='Ctrl+s')
-        self.fileMenu.add_command(label='saveAsFile', command='', accelerator='Ctrl+n')
+        self.fileMenu.add_command(label='open', command=self.root.filehandler.openFile, accelerator='Ctrl+o')
+        self.fileMenu.add_command(label='saveFile', command=self.root.filehandler.saveFile, accelerator='Ctrl+s')
+        self.fileMenu.add_command(label='saveAsFile', command=self.root.filehandler.saveAsFile, accelerator='Ctrl+n')
         self.mainMenu.add_cascade(label='Edit', menu=self.fileMenu,)
 
         #root configuration

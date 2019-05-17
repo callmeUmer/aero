@@ -1,13 +1,15 @@
 from tkinter import *
 from pygments import lex
+#from .text import textEditor
 from pygments.lexers import PythonLexer, get_lexer_for_filename
 
 
 class highlighter:
-    def __init__(self, textpad):
+    def __init__(self, root, textpad):
+        self.root = root
         self.textpad = textpad
         self.lexer = None
-        #self.textpad.bind('<KeyRelease>', self.highlightline)
+        self.textpad.bind('<KeyRelease>', self.highlightLine)
 
 
     def highlightLine(self, *args, **kwargs):
@@ -28,7 +30,7 @@ class highlighter:
     def highlightFile(self, *args, **kwargs):
         to_highliget = self.textpad.get('1.0', 'end-1c')
         self.textpad.mark_set("range_start", '1.0')
-        lexerToUse = get_lexer_for_filename(str(self.file))
+        lexerToUse = get_lexer_for_filename(str(self.root.filehandler.file))
         self.lexer = lexerToUse
 
         for token, context in lex(to_highliget, lexerToUse):
